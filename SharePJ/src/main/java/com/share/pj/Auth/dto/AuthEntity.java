@@ -7,4 +7,5 @@ public class AuthEntity {
 	private String id;
 	private String loginFlag;
 	private String access_token;
+	private String connected_at;
 }

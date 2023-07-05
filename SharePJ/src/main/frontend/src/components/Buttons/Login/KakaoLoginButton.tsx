@@ -1,77 +1,71 @@
 import React, { useEffect} from 'react';
-import axios from 'axios';
+import { axiosPost } from '../../Commons/AxiosHelper';
 
 declare global {
   interface Window {
     Kakao: any;
   }
 }
+
+interface KakaoAuthObj {
+  access_token: string;
+}
+
+interface KakaoError {
+  error: string;
+  error_description: string;
+}
+
 type DataType = {
   loginFlag?: string;
   [key: string]: any;
 };
+
 const KakaoLoginButton: React.FC = () => {
   useEffect(() => {
-    // 카카오 스크립트 초기화
     const script = document.createElement('script');
     script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
     script.onload = () => {
-      window.Kakao.init('eb431bfa4de0d75cf6c18bee90abf367'); // 발급받은 앱 키를 입력
+      if (!window.Kakao.isInitialized()) { // Kakao.init이 이미 호출되었는지 확인
+        window.Kakao.init(process.env.REACT_APP_KAKAO_KEY);
+      }
     };
     document.head.appendChild(script);
   }, []);
 
-  const loginWithKakao = () => {
-    try {
-      return new Promise((resolve, reject) => {
-        if (!window.Kakao) {
-          reject('Kakao 인스턴스가 존재하지 않습니다.');
-        }
-        window.Kakao.Auth.login({
-          success: function (authObj: any) {
-            kakaoResponse(authObj.access_token);
-            resolve(authObj);
-          },
-          fail: function (err: any) {
-            alert(JSON.stringify(err));
-            reject(err);
-          },
-        });
-      });
-    } catch (err) {
-      alert(JSON.stringify(err));
+  const loginWithKakao = async () => {
+    if (!window.Kakao) {
+      alert('Kakao 인스턴스가 존재하지 않습니다.');
+      return;
+    }
+
+    window.Kakao.Auth.login({
+      success: (authObj: KakaoAuthObj) => kakaoResponse(authObj.access_token),
+      fail: (err: KakaoError) => alert(JSON.stringify(err))
+    });
+  };
+
+ 
+
+  const kakaoResponse = async (access_token: string) => {
+    const postData = { access_token, loginFlag: 'kakao' };
+    console.log("Data sent with the request:", postData);
+    const response = await axiosPost('/api/loginCheck', postData);
+    if (response) {
+      checkKakaoUser(response.data);
     }
   };
-  const kakaoResponse = (access_token: string) => {
-    axios.get('https://kapi.kakao.com/v2/user/me',
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    },
-    )
-    .then(response => {
-      console.log(response)
-      checkKakaoUser(response.data)
-    })
-    .catch(error => console.log(error))
 
-  }
+  const checkKakaoUser = async (data : DataType) => {
+    if (typeof data === 'object' && data !== null) {
+      console.log("Data sent with the request:", data);
+      data.loginFlag = 'kakao';
+      await axiosPost('/api/login', data);
+    } else {
+      console.error('Data must be an object:', data);
+    }
+  };
 
-  const checkKakaoUser = (data : DataType) => {
-  
-    data.loginFlag = 'kakao'
-    axios.post('/api/login',data)
-    .then(response => {
-     
-    })
-    .catch(error => console.log(error))
-
-  }
-
-  
-
-  
   return <button onClick={loginWithKakao}>카카오 계정으로 로그인</button>;
 }
 

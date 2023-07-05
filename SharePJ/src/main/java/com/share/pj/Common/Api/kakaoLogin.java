@@ -4,10 +4,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.share.pj.Auth.dto.AuthEntity;
+
 public class kakaoLogin {
-	public void getKakaoUserInfo(String accessToken) {
+	public static AuthEntity getKakaoUserInfo(String accessToken) throws JsonMappingException, JsonProcessingException {
 	    RestTemplate restTemplate = new RestTemplate();
 	    
 	    HttpHeaders headers = new HttpHeaders();
@@ -17,6 +23,8 @@ public class kakaoLogin {
 
 	    ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.GET, entity, String.class);
 
-	    System.out.println(response.getBody());
+	    ObjectMapper mapper = new ObjectMapper();
+	    AuthEntity authInfo = mapper.readValue(response.getBody(), AuthEntity.class);
+	    return authInfo;
 	}
 }
