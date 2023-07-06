@@ -50,7 +50,7 @@ const KakaoLoginButton: React.FC = () => {
   const kakaoResponse = async (access_token: string) => {
     const postData = { access_token, loginFlag: 'kakao' };
     console.log("Data sent with the request:", postData);
-    const response = await axiosPost('/api/loginCheck', postData);
+    const response = await axiosPost('/api/login', postData);
     if (response) {
       checkKakaoUser(response.data);
     }
