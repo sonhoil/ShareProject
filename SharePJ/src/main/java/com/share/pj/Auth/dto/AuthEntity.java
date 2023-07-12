@@ -8,4 +8,5 @@ public class AuthEntity {
 	private String loginFlag;
 	private String access_token;
 	private String connected_at;
+	private String status;
 }

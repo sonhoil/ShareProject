@@ -18,10 +18,10 @@ public class AuthService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	public String login(AuthEntity authEntity) throws JsonMappingException, JsonProcessingException {
+	public Object login(AuthEntity authEntity) throws JsonMappingException, JsonProcessingException {
 		AuthEntity authInfo = kakaoLogin.getKakaoUserInfo(authEntity.getAccess_token());
     	authInfo.setLoginFlag(authEntity.getLoginFlag());
-    	List<UserEntity> user = null;
+    	UserEntity user = null;
     	String LoginFlag = authInfo.getLoginFlag();
     	switch (LoginFlag) {
     	case "kakao":
@@ -32,7 +32,7 @@ public class AuthService {
     	case "google":
     		break;
     	}
-    	if(user.size() < 1) {
+    	if(user == null) {
 			/*
 			 * UserEntity newUser = new UserEntity();
 			 * newUser.setUid(UUID.randomUUID().toString());
@@ -42,10 +42,39 @@ public class AuthService {
 			 * newUser.setKakao(authInfo.getId()); userRepository.save(newUser); user =
 			 * userRepository.findByKakao(authInfo.getId());
 			 */
-    		return "regist";
+    		authInfo.setStatus("regist");
+    		return authInfo;
+		}else {
+			return user;
 		}
     	
-		return "success";
+		
 	}
+	
+	public String confirmPhoneNumber(UserEntity userEntity) throws JsonMappingException, JsonProcessingException {
+		System.out.println(userEntity.getPhone());
+		UserEntity user = userRepository.findByphone(userEntity.getPhone());
+		if(user == null) return "using"; else return "exist";
+		
+	}	
+	public UserEntity registUser(UserEntity userEntity) throws JsonMappingException, JsonProcessingException {
+		UserEntity user = userRepository.findByphone(userEntity.getPhone());
+		if(user != null) return null;
+		
+		userEntity.setUid(UUID.randomUUID().toString());
+		String LoginFlag = userEntity.getLoginFlag();
+		switch (LoginFlag) {
+    	case "kakao":
+    		userEntity.setKakao(userEntity.getId());
+    		break;
+    	case "naver":
+    		break;
+    	case "google":
+    		break;
+    	}
+		
+		UserEntity result = userRepository.save(userEntity);
+		return result;
+	}	
 
 }

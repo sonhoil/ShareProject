@@ -14,7 +14,7 @@ import lombok.Data;
 @AllArgsConstructor
 @NoArgsConstructor // Added this annotation
 @Entity(name="User")
-public class UserEntity {
+public class UserEntity extends AuthEntity{
 	@Id
 	private String uid;
 	private String id;

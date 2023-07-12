@@ -9,6 +9,7 @@ import com.share.pj.Auth.dto.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long>{
-	public List<UserEntity> findByKakao(String kakao);
+	public UserEntity findByKakao(String kakao);
+	public UserEntity findByphone(String phone);
 	
 }
