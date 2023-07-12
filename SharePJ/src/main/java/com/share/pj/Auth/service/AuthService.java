@@ -18,7 +18,7 @@ public class AuthService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	public int login(AuthEntity authEntity) throws JsonMappingException, JsonProcessingException {
+	public String login(AuthEntity authEntity) throws JsonMappingException, JsonProcessingException {
 		AuthEntity authInfo = kakaoLogin.getKakaoUserInfo(authEntity.getAccess_token());
     	authInfo.setLoginFlag(authEntity.getLoginFlag());
     	List<UserEntity> user = null;
@@ -33,17 +33,19 @@ public class AuthService {
     		break;
     	}
     	if(user.size() < 1) {
-			UserEntity newUser = new UserEntity();
-			newUser.setUid(UUID.randomUUID().toString());
-			newUser.setId(authInfo.getId());
-			
-			
-			newUser.setKakao(authInfo.getId());
-			userRepository.save(newUser);
-			user = userRepository.findByKakao(authInfo.getId());
+			/*
+			 * UserEntity newUser = new UserEntity();
+			 * newUser.setUid(UUID.randomUUID().toString());
+			 * newUser.setId(authInfo.getId());
+			 * 
+			 * 
+			 * newUser.setKakao(authInfo.getId()); userRepository.save(newUser); user =
+			 * userRepository.findByKakao(authInfo.getId());
+			 */
+    		return "regist";
 		}
     	
-		return 0;
+		return "success";
 	}
 
 }

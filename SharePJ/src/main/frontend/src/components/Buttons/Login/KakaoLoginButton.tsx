@@ -1,5 +1,6 @@
 import React, { useEffect} from 'react';
 import { axiosPost } from '../../Commons/AxiosHelper';
+import { useNavigate } from 'react-router-dom'; 
 
 declare global {
   interface Window {
@@ -22,6 +23,7 @@ type DataType = {
 };
 
 const KakaoLoginButton: React.FC = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
@@ -52,10 +54,18 @@ const KakaoLoginButton: React.FC = () => {
     console.log("Data sent with the request:", postData);
     const response = await axiosPost('/api/login', postData);
     if (response) {
-      checkKakaoUser(response.data);
+      checkRegistUser(response.data);
     }
   };
 
+  const checkRegistUser = (flag : String) => {
+    if(flag === 'regist'){
+      //regist
+      navigate('/PhoneConfirm');
+    }else if(flag === 'suuccess'){
+      //login
+    }
+  }
   const checkKakaoUser = async (data : DataType) => {
     if (typeof data === 'object' && data !== null) {
       console.log("Data sent with the request:", data);

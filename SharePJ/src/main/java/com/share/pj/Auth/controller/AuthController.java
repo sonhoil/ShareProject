@@ -27,9 +27,9 @@ public class AuthController {
     	AuthEntity authInfo = kakaoLogin.getKakaoUserInfo(authEntity.getAccess_token());
     	authInfo.setLoginFlag(authEntity.getLoginFlag());
     	System.out.println(authInfo);
-    	authservice.login(authEntity);
+    	String result = authservice.login(authEntity);
     	
-    	return "";
+    	return result;
     }
   
 }
