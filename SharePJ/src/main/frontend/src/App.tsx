@@ -9,6 +9,7 @@ const App: React.FC = () => {
       <div>
         <div style={{ marginLeft: "250px", marginTop: "60px" }}>
           <Routes>
+            <Route path="/" />
             <Route path="/login" element={<Login />} />
             <Route path="/phoneConfirm" element={<PhoneConfirm />} />
           </Routes>

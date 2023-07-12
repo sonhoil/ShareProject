@@ -22,6 +22,13 @@ type DataType = {
   [key: string]: any;
 };
 
+type loginInfo ={
+  id: string;
+  status: string;
+  loginFlag: string;
+  name?: string;
+  phone?: string;
+}
 const KakaoLoginButton: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -54,16 +61,18 @@ const KakaoLoginButton: React.FC = () => {
     console.log("Data sent with the request:", postData);
     const response = await axiosPost('/api/login', postData);
     if (response) {
+      console.log(response)
       checkRegistUser(response.data);
     }
   };
 
-  const checkRegistUser = (flag : String) => {
-    if(flag === 'regist'){
+  const checkRegistUser = (loginInfo : loginInfo) => {
+    if(loginInfo.status === 'regist'){
       //regist
-      navigate('/PhoneConfirm');
-    }else if(flag === 'suuccess'){
+      navigate('/PhoneConfirm', { state: { loginInfo } });
+    }else if(loginInfo.id){
       //login
+      navigate('/');
     }
   }
   const checkKakaoUser = async (data : DataType) => {
