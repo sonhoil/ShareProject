@@ -11,9 +11,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.share.pj.Auth.dto.AuthEntity;
+import com.share.pj.Auth.dto.UserEntity;
 
 public class kakaoLogin {
-	public static AuthEntity getKakaoUserInfo(String accessToken) throws JsonMappingException, JsonProcessingException {
+	public static UserEntity getKakaoUserInfo(String accessToken) throws JsonMappingException, JsonProcessingException {
 	    RestTemplate restTemplate = new RestTemplate();
 	    
 	    HttpHeaders headers = new HttpHeaders();
@@ -24,7 +25,7 @@ public class kakaoLogin {
 	    ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.GET, entity, String.class);
 
 	    ObjectMapper mapper = new ObjectMapper();
-	    AuthEntity authInfo = mapper.readValue(response.getBody(), AuthEntity.class);
+	    UserEntity authInfo = mapper.readValue(response.getBody(), UserEntity.class);
 	    return authInfo;
 	}
 }

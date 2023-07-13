@@ -21,4 +21,6 @@ public class UserEntity extends AuthEntity{
 	private String name;
 	private String phone;
 	private String kakao;
+	
+	
 }
