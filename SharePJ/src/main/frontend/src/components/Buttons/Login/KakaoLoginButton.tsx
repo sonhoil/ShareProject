@@ -69,7 +69,10 @@ const KakaoLoginButton: React.FC = () => {
     if (loginInfo.status === 'regist') {
       navigate('/PhoneConfirm', { state: { loginInfo } });
     } else if (loginInfo.id) {
-      navigate('/');
+      const sessionId = loginInfo.id;
+      localStorage.setItem('sessionId', sessionId);
+
+      navigate('/loginSuccess');
     }
   }
 
